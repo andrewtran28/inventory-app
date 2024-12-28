@@ -1,0 +1,1 @@
+An inventory management app for a mock store. The inventory contains categories and items which can be chosen on the homepage and then obtain a list of every item in that category. This project should demonstrate the CRUD methods (Create, Read, Update, Delete) for both items and categories.
