@@ -1,0 +1,20 @@
+{
+  "name": "inventory-app",
+  "version": "1.0.0",
+  "description": "An inventory management app for a mock store. The inventory contains categories and items which can be chosen on the homepage and then obtain a list of every item in that category. This project should demonstrate the CRUD methods (Create, Read, Update, Delete) for both items and categories.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-async-handler": "^1.2.0",
+    "node-postgres": "^0.6.2",
+    "pg": "^8.13.1"
+  }
+}
