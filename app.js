@@ -17,9 +17,9 @@ app.use("/library", indexRouter);
 app.use("/library/new", indexRouter);
 app.use("/library/update:id", indexRouter);
 
-app.get("*",(req, res) => {
-    res.render("./errors/404.ejs") 
-});
+// app.get("*",(req, res) => {
+//     res.render("./errors/404.ejs") 
+// });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

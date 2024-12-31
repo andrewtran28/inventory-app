@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const query = require("../db/queries.js");
-const { validationResult } = require("express-validation");
-// const { render } = require("ejs");
+const { validationResult } = require("express-validator");
+const { render } = require("ejs");
 
 const getGames = asyncHandler(async (req, res) => {
     if (Object.keys(req.query).length != 0) {
@@ -69,6 +69,13 @@ const deletePlatform = asyncHandler(async(req, res) => {
         pass: "",
     });
 });
+
+// const platformDeleteVerifier = asyncHnadler(async(req, res) => {
+//     if(req.body.deletePass == process.env.ADMINPASSWORD) {
+//         query.deletePlatform(req.query.brand);
+//         res.redirect("/");
+//     }
+// })
 
 const deleteGenre = asyncHandler(async(req, res) => {
     res.render('delete', {
