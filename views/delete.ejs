@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %>></title>
+  </head>
+  <body>
+      <h1><%= title %></h1>
+      <form class="passwordVerifier" method="POST"  action=<%= confirm %>>
+        <label for="deletePass" class="deleteLabel">Password: </label>
+        <input type="text" class="deleteInput" name="deletePass" id="deletePass">
+        <span class="error-message"><%= pass %></span>
+        <br>
+        <button type="submit" class="btn-delete">Delete</button>
+      </form>
+  </body>
+</html>

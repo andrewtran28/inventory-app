@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <ul class="error">
+      <% if (errors) {%>
+        <% errors.forEach(function(error) { %>
+          <%if (error.path == selector) { %>
+            <li><%= error.msg %></li>
+          <%}%>
+        <% }); %>
+        <% } %>
+      </ul>
+  </body>
+</html>

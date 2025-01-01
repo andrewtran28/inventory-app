@@ -1,18 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
 </head>
-<body>
+  <body>
     <h1>This is the index page</h1>
     <%- include('header') %>
 
-    <div>
-        Platforms
-    </div>
-<hr>
-    <div>Genre</div>
-</body>
+    <main>
+      <div class="platforms-cont">
+        <h2>Platforms</h2>
+        <ul class="list-platforms">
+          <% for (let i=0; i < platforms.length; i++) { %>
+            <li class="list-platform">
+              <a class="platform" href="/library?platform?=<%= platforms[i].platform>">
+                <%= platforms[i].platform %>
+              </a>
+            </li> 
+          <% } %>
+          <li class="list-platform">
+            <a class="platform" href="/library?platform=other">Other</a>
+          </li>
+        </ul>
+      </div>
+
+      <hr>
+      <div class="genres-cont">
+        <h2>Platforms</h2>
+        <ul class="list-genres">
+          <% for (let i=0; i < genres.length; i++) { %>
+            <li class="list-genre">
+              <a class="genre" href="/library?genre?=<%= genres[i].genre>">
+                <%= genres[i].genre %>
+              </a>
+            </li> 
+          <% } %>
+          <li class="list-genre">
+            <a class="genre" href="/library?genre=other">Other</a>
+          </li>
+        </ul>
+      </div>
+    </main>
+
+  </body>
 </html>

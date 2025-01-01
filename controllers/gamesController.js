@@ -70,12 +70,18 @@ const deletePlatform = asyncHandler(async(req, res) => {
     });
 });
 
-// const platformDeleteVerifier = asyncHnadler(async(req, res) => {
-//     if(req.body.deletePass == process.env.ADMINPASSWORD) {
-//         query.deletePlatform(req.query.brand);
-//         res.redirect("/");
-//     }
-// })
+const platformDeleteVerifier = asyncHandler(async(req, res) => {
+    if(req.body.deletePass == process.env.ADMINPASSWORD) {
+        query.deletePlatform(req.query.brand);
+        res.redirect("/");
+    } else {
+        res.render("delete", {
+            title: "Delete Platform?",
+            confirm: `/library/delete/platform?platform=${req.query.platform}`,
+            pass: "Invalid Password.",
+        });
+    }
+})
 
 const deleteGenre = asyncHandler(async(req, res) => {
     res.render('delete', {
@@ -85,13 +91,39 @@ const deleteGenre = asyncHandler(async(req, res) => {
     });
 });
 
+const genreDeleteVerifier = asyncHandler(async(req, res) => {
+    if(req.body.deletePass == process.env.ADMINPASSWORD) {
+        query.deleteGenre(req.query.brand);
+        res.redirect("/");
+    } else {
+        res.render("delete", {
+            title: "Delete Genre?",
+            confirm: `/library/delete/genre?genre=${req.query.genre}`,
+            pass: "Invalid Password.",
+        });
+    }
+})
+
 const deleteGame = asyncHandler(async(req, res) => {
     res.render('delete', {
         title: "Delete Game?",
-        confirm: `/librarydelete/product?product=${req.query.game}`,
+        confirm: `/library/delete/product?product=${req.query.game}`,
         pass: "",
     });
 });
+
+const gameDeleteVerifier = asyncHandler(async(req, res) => {
+    if(req.body.deletePass == process.env.ADMINPASSWORD) {
+        query.deleteGame(req.query.brand);
+        res.redirect("/");
+    } else {
+        res.render("delete", {
+            title: "Delete Game?",
+            confirm: `/library/delete/game?game=${req.query.game}`,
+            pass: "Invalid Password.",
+        });
+    }
+})
 
 
 module.exports = {
@@ -101,6 +133,9 @@ module.exports = {
     getUpdateGameForm,
     submitUpdateGame,
     deletePlatform,
+    platformDeleteVerifier,
     deleteGenre,
+    genreDeleteVerifier,
     deleteGame,
+    gameDeleteVerifier,
 };
