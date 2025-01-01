@@ -21,7 +21,7 @@ const validator = [
 const editValidator = [
   body(".password").trim()
     .custom(value => {
-      return value == process.env.ADMINPASSWORD
+      return value == process.env.ADMIN_PASSWORD
     })
     .withMessage("Incorrect password.")
 ]
