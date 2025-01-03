@@ -36,13 +36,18 @@ const updateGame = async (id, name, platform, genre, image) => {
     await pool.query(`UPDATE game_library SET name='${name}, platform = '${platform}', genre='${genre}', image='${imageActual}' WHERE id='${id};`);
 }
 
-const getDistinctPlatform = async () => {
-    const { rows } = await pool.query(`SELECT DISTINCT platform FROM game-library WHERE platform != 'other';`);
+const getDistinctPlatforms = async () => {
+    // const { rows } = await pool.query("SELECT DISTINCT platform FROM game_library WHERE platform != 'other';")
+    const { rows } = await pool.query(`
+        SELECT string_agg(DISTINCT platform, ', ') AS unique_platforms
+        FROM game_library;
+    `);
+  
     return rows;
 }
 
-const getDistinctGenre =  async () => {
-    const { rows } = await pool.query(`SELECT DISTINCT genre FROM game-library WHERE platform != 'other';`);
+const getDistinctGenres =  async () => {
+    const { rows } = await pool.query("SELECT DISTINCT genre FROM game_library WHERE genre != 'other';");
     return rows;
 }
 
@@ -61,8 +66,8 @@ module.exports = {
     getGameById,
     addGame,
     updateGame,
-    getDistinctPlatform,
-    getDistinctGenre,
+    getDistinctPlatforms,
+    getDistinctGenres,
     deletePlatform,
     deleteGameById,
 };

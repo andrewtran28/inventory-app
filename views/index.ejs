@@ -13,13 +13,14 @@
       <div class="platforms-cont">
         <h2>Platforms</h2>
         <ul class="list-platforms">
-          <% for (let i=0; i < platforms.length; i++) { %>
-            <li class="list-platform">
-              <a class="platform" href="/library?platform?=<%= platforms[i].platform>">
-                <%= platforms[i].platform %>
-              </a>
-            </li> 
-          <% } %>
+          <% for(let i=0; i < platforms.length; i++) { %>
+            <li class="platform-list">
+                <a class="platform-list" href="/products?platform=<%= platforms[i].platform%>">
+                    <%= platforms[i].platform%>
+                </a>
+                <!-- <a href="/products/delete/platform?platform=<%= platforms[i].platform%>" class="delete-platform">Delete</a> -->
+            </li>
+            <% } %>
           <li class="list-platform">
             <a class="platform" href="/library?platform=other">Other</a>
           </li>
@@ -29,14 +30,6 @@
       <hr>
       <div class="genres-cont">
         <h2>Platforms</h2>
-        <ul class="list-genres">
-          <% for (let i=0; i < genres.length; i++) { %>
-            <li class="list-genre">
-              <a class="genre" href="/library?genre?=<%= genres[i].genre>">
-                <%= genres[i].genre %>
-              </a>
-            </li> 
-          <% } %>
           <li class="list-genre">
             <a class="genre" href="/library?genre=other">Other</a>
           </li>

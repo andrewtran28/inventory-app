@@ -2,8 +2,8 @@ const { Router } = require("express");
 const indexRouter = Router();
 
 const indexController = require("../controllers/indexController");
-// const gamesController = require("../controllers/gamesController");
-// const { validator, editValidator } = require("../controllers/validator.js");
+const gamesController = require("../controllers/gamesController");
+const { validator, editValidator } = require("../controllers/validator.js");
 
 // indexRouter.get("/library/new", gamesController.getNewGameForm);
 // indexRouter.post("/library/new", validator, gamesController.submitNewGame);
@@ -19,7 +19,7 @@ const indexController = require("../controllers/indexController");
 // indexRouter.post("/library/update/:id", validator, editValidator, gamesController.submitUpdateGame);
 // indexRouter.get("/library/update/:id", gamesController.getUpdateGameForm);
 
-// indexRouter.get("/library", gamesController.getGames);
+indexRouter.get("/library", gamesController.getGames);
 indexRouter.get("/", indexController.getIndex);
 
 module.exports = indexRouter;
