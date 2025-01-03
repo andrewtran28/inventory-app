@@ -3,54 +3,27 @@
 const { Client } = require("pg");
 require('dotenv').config();
 
-// const SQL = `
-//   CREATE TABLE IF NOT EXISTS game_library (
-//     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-//     name VARCHAR( 255 ),
-//     platform VARCHAR ( 255 ),
-//     genre VARCHAR ( 255 )
-//   );
-
-//   INSERT INTO game_library (name, platform, genre)
-//   VALUES
-//     ('The Legend of Zelda: Breath of the Wild', 'Nintendo Switch', 'Action-Adventure'),
-//     ('Halo Infinite', 'Xbox Series X, PC', 'First-Person Shooter'),
-//     ('God of War Ragnarök', 'PlayStation 5, PlayStation 4', 'Action-Adventure'),
-//     ('Super Mario Odyssey', 'Nintendo Switch', 'Platformer'),
-//     ('Red Dead Redemption 2', 'PS4, Xbox One, PC', 'Action-Adventure'),
-//     ('Minecraft', 'PC, Xbox, PlayStation, Switch, Mobile', 'Sandbox'),
-//     ('Gran Turismo 7', 'PlayStation 5, PlayStation 4', 'Racing'),
-//     ('Fortnite', 'PC, Xbox, PlayStation, Switch, Mobile', 'Battle Royale'),
-//     ('Animal Crossing: New Horizons', 'Nintendo Switch', 'Life Simulation'),
-//     ('FIFA 23', 'PC, Xbox, PlayStation, Switch', 'Sports'),
-//     ('The Witcher 3: Wild Hunt', 'PC, PS4, Xbox One, Switch', 'Role-Playing Game'),
-//     ('Overwatch 2', 'PC, Xbox, PlayStation, Switch', 'First-Person Shooter')
-// `;
-
 const SQL = `
   CREATE TABLE Games (
-    game_id INT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(255) NOT NULL,
-    genre_id INT,
-    FOREIGN KEY (genre_id) REFERENCES Genres(genre_id)
+      game_id SERIAL PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      genre_id INT REFERENCES Genres(genre_id) ON DELETE SET NULL
   );
 
   CREATE TABLE Genres (
-    genre_id INT PRIMARY KEY AUTO_INCREMENT,
-    genre_name VARCHAR(100) NOT NULL
+      genre_id SERIAL PRIMARY KEY,
+      genre_name VARCHAR(100) NOT NULL
   );
 
   CREATE TABLE Platforms (
-    platform_id INT PRIMARY KEY AUTO_INCREMENT,
-    platform_name VARCHAR(100) NOT NULL
+      platform_id SERIAL PRIMARY KEY,
+      platform_name VARCHAR(100) NOT NULL
   );
-  
+
   CREATE TABLE Game_Platforms (
-    game_id INT,
-    platform_id INT,
-    PRIMARY KEY (game_id, platform_id),
-    FOREIGN KEY (game_id) REFERENCES Games(game_id),
-    FOREIGN KEY (platform_id) REFERENCES Platforms(platform_id)
+      game_id INT REFERENCES Games(game_id) ON DELETE CASCADE,
+      platform_id INT REFERENCES Platforms(platform_id) ON DELETE CASCADE,
+      PRIMARY KEY (game_id, platform_id)
   );
 
   INSERT INTO Genres (genre_name) VALUES 
@@ -117,3 +90,27 @@ async function main() {
 }
 
 main();
+
+// const SQL = `
+//   CREATE TABLE IF NOT EXISTS game_library (
+//     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+//     name VARCHAR( 255 ),
+//     platform VARCHAR ( 255 ),
+//     genre VARCHAR ( 255 )
+//   );
+
+//   INSERT INTO game_library (name, platform, genre)
+//   VALUES
+//     ('The Legend of Zelda: Breath of the Wild', 'Nintendo Switch', 'Action-Adventure'),
+//     ('Halo Infinite', 'Xbox Series X, PC', 'First-Person Shooter'),
+//     ('God of War Ragnarök', 'PlayStation 5, PlayStation 4', 'Action-Adventure'),
+//     ('Super Mario Odyssey', 'Nintendo Switch', 'Platformer'),
+//     ('Red Dead Redemption 2', 'PS4, Xbox One, PC', 'Action-Adventure'),
+//     ('Minecraft', 'PC, Xbox, PlayStation, Switch, Mobile', 'Sandbox'),
+//     ('Gran Turismo 7', 'PlayStation 5, PlayStation 4', 'Racing'),
+//     ('Fortnite', 'PC, Xbox, PlayStation, Switch, Mobile', 'Battle Royale'),
+//     ('Animal Crossing: New Horizons', 'Nintendo Switch', 'Life Simulation'),
+//     ('FIFA 23', 'PC, Xbox, PlayStation, Switch', 'Sports'),
+//     ('The Witcher 3: Wild Hunt', 'PC, PS4, Xbox One, Switch', 'Role-Playing Game'),
+//     ('Overwatch 2', 'PC, Xbox, PlayStation, Switch', 'First-Person Shooter')
+// `;
