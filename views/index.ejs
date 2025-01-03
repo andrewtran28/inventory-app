@@ -13,14 +13,14 @@
       <div class="platforms-cont">
         <h2>Platforms</h2>
         <ul class="list-platforms">
-          <% for(let i=0; i < platforms.length; i++) { %>
-            <li class="platform-list">
-                <a class="platform-list" href="/products?platform=<%= platforms[i].platform%>">
-                    <%= platforms[i].platform%>
+          <% platforms.forEach((platform) => { %>
+            <li class="list-platform">
+                <a class="platform" href="/library?platform=<%= platform.platform_name %>">
+                    <%= platform.platform_name%>
                 </a>
-                <!-- <a href="/products/delete/platform?platform=<%= platforms[i].platform%>" class="delete-platform">Delete</a> -->
+                <!-- <a href="/library/delete/platform?platform=<%= platform.platform%>" class="delete-platform">Delete</a> -->
             </li>
-            <% } %>
+          <% }); %>
           <li class="list-platform">
             <a class="platform" href="/library?platform=other">Other</a>
           </li>
@@ -30,10 +30,20 @@
       <hr>
       <div class="genres-cont">
         <h2>Platforms</h2>
-          <li class="list-genre">
-            <a class="genre" href="/library?genre=other">Other</a>
-          </li>
+        <ul class="list-genres">
+          <% genres.forEach((genre) => { %>
+            <li class="list-genre">
+              <a class="genre" href="/library?genre=<%= genres.genre_name %>">
+                <%= genre.genre_name %>
+              </a>
+              <!-- <a href="/library/delete/genre?genre=<%= genre.genre_name %>" class="delete-genre">Delete</a> -->
+            </li>
+          <% }); %>
+            <li class="list-genre">
+              <a class="genre" href="/library?genre=other">Other</a>
+            </li>
         </ul>
+
       </div>
     </main>
 

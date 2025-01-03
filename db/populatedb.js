@@ -4,29 +4,30 @@ const { Client } = require("pg");
 require('dotenv').config();
 
 const SQL = `
-  CREATE TABLE Games (
-      game_id SERIAL PRIMARY KEY,
-      title VARCHAR(255) NOT NULL,
-      genre_id INT REFERENCES Genres(genre_id) ON DELETE SET NULL
+  CREATE TABLE genres (
+    genre_id SERIAL PRIMARY KEY,
+    genre_name VARCHAR(100) NOT NULL
   );
 
-  CREATE TABLE Genres (
-      genre_id SERIAL PRIMARY KEY,
-      genre_name VARCHAR(100) NOT NULL
+  CREATE TABLE games (
+    game_id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    img_url VARCHAR(255),
+    genre_id INT REFERENCES genres(genre_id) ON DELETE SET NULL
   );
 
-  CREATE TABLE Platforms (
-      platform_id SERIAL PRIMARY KEY,
-      platform_name VARCHAR(100) NOT NULL
+  CREATE TABLE platforms (
+    platform_id SERIAL PRIMARY KEY,
+    platform_name VARCHAR(100) NOT NULL
   );
 
-  CREATE TABLE Game_Platforms (
-      game_id INT REFERENCES Games(game_id) ON DELETE CASCADE,
-      platform_id INT REFERENCES Platforms(platform_id) ON DELETE CASCADE,
-      PRIMARY KEY (game_id, platform_id)
+  CREATE TABLE game_platforms (
+    game_id INT REFERENCES games(game_id) ON DELETE CASCADE,
+    platform_id INT REFERENCES platforms(platform_id) ON DELETE CASCADE,
+    PRIMARY KEY (game_id, platform_id)
   );
 
-  INSERT INTO Genres (genre_name) VALUES 
+  INSERT INTO genres (genre_name) VALUES 
   ('Action'),
   ('RPG'),
   ('Adventure'),
@@ -38,14 +39,14 @@ const SQL = `
   ('Horror'),
   ('Puzzle');
 
-  INSERT INTO Platforms (platform_name) VALUES 
+  INSERT INTO platforms (platform_name) VALUES 
   ('PC'),
   ('PlayStation'),
   ('Xbox'),
   ('Nintendo Switch'),
   ('Mobile');
 
-  INSERT INTO Games (title, genre_id) VALUES 
+  INSERT INTO games (title, genre_id) VALUES 
   ('The Witcher 3: Wild Hunt', 2),  -- RPG
   ('Grand Theft Auto V', 1),  -- Action
   ('The Legend of Zelda: Breath of the Wild', 3),  -- Adventure
@@ -57,7 +58,7 @@ const SQL = `
   ('Resident Evil Village', 9),  -- Horror
   ('Portal 2', 10);
 
-  INSERT INTO Game_Platforms (game_id, platform_id) VALUES
+  INSERT INTO game_platforms (game_id, platform_id) VALUES
   (1, 1),  -- The Witcher 3: Wild Hunt on PC
   (1, 2),  -- The Witcher 3: Wild Hunt on PlayStation
   (2, 1),  -- Grand Theft Auto V on PC
@@ -81,7 +82,7 @@ const SQL = `
 
 async function main() {
   const client = new Client({
-    connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
   });
 
   await client.connect();
@@ -93,24 +94,24 @@ main();
 
 // const SQL = `
 //   CREATE TABLE IF NOT EXISTS game_library (
-//     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-//     name VARCHAR( 255 ),
-//     platform VARCHAR ( 255 ),
-//     genre VARCHAR ( 255 )
+//   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+//   name VARCHAR( 255 ),
+//   platform VARCHAR ( 255 ),
+//   genre VARCHAR ( 255 )
 //   );
 
 //   INSERT INTO game_library (name, platform, genre)
 //   VALUES
-//     ('The Legend of Zelda: Breath of the Wild', 'Nintendo Switch', 'Action-Adventure'),
-//     ('Halo Infinite', 'Xbox Series X, PC', 'First-Person Shooter'),
-//     ('God of War Ragnarök', 'PlayStation 5, PlayStation 4', 'Action-Adventure'),
-//     ('Super Mario Odyssey', 'Nintendo Switch', 'Platformer'),
-//     ('Red Dead Redemption 2', 'PS4, Xbox One, PC', 'Action-Adventure'),
-//     ('Minecraft', 'PC, Xbox, PlayStation, Switch, Mobile', 'Sandbox'),
-//     ('Gran Turismo 7', 'PlayStation 5, PlayStation 4', 'Racing'),
-//     ('Fortnite', 'PC, Xbox, PlayStation, Switch, Mobile', 'Battle Royale'),
-//     ('Animal Crossing: New Horizons', 'Nintendo Switch', 'Life Simulation'),
-//     ('FIFA 23', 'PC, Xbox, PlayStation, Switch', 'Sports'),
-//     ('The Witcher 3: Wild Hunt', 'PC, PS4, Xbox One, Switch', 'Role-Playing Game'),
-//     ('Overwatch 2', 'PC, Xbox, PlayStation, Switch', 'First-Person Shooter')
+//   ('The Legend of Zelda: Breath of the Wild', 'Nintendo Switch', 'Action-Adventure'),
+//   ('Halo Infinite', 'Xbox Series X, PC', 'First-Person Shooter'),
+//   ('God of War Ragnarök', 'PlayStation 5, PlayStation 4', 'Action-Adventure'),
+//   ('Super Mario Odyssey', 'Nintendo Switch', 'Platformer'),
+//   ('Red Dead Redemption 2', 'PS4, Xbox One, PC', 'Action-Adventure'),
+//   ('Minecraft', 'PC, Xbox, PlayStation, Switch, Mobile', 'Sandbox'),
+//   ('Gran Turismo 7', 'PlayStation 5, PlayStation 4', 'Racing'),
+//   ('Fortnite', 'PC, Xbox, PlayStation, Switch, Mobile', 'Battle Royale'),
+//   ('Animal Crossing: New Horizons', 'Nintendo Switch', 'Life Simulation'),
+//   ('FIFA 23', 'PC, Xbox, PlayStation, Switch', 'Sports'),
+//   ('The Witcher 3: Wild Hunt', 'PC, PS4, Xbox One, Switch', 'Role-Playing Game'),
+//   ('Overwatch 2', 'PC, Xbox, PlayStation, Switch', 'First-Person Shooter')
 // `;
