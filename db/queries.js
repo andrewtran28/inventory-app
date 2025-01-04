@@ -2,24 +2,29 @@ const pool = require("./pool");
 
 const getAllGames = async () => {
   const { rows } = await pool.query(`
-    SELECT 
-      g.title AS game_title, 
-      ge.genre_name AS genre, 
-      GROUP_CONCAT(p.platform_name ORDER BY p.platform_name SEPARATOR ', ') AS platforms
+    SELECT
+      g.title,
+      g.img_url,
+      ge.genre_name,
+      STRING_AGG(p.platform_name, ', ') AS platforms
     FROM games g
-    JOIN genres ge ON g.genre_id = ge.genre_id
-    JOIN game_platforms gp ON g.game_id = gp.game_id
-    JOIN platforms p ON gp.platform_id = p.platform_id
-    GROUP BY g.game_id, g.title, ge.genre_name
-    ORDER BY g.title;
+    LEFT JOIN genres ge ON g.genre_id = ge.genre_id
+    LEFT JOIN game_platforms gp ON g.game_id = gp.game_id
+    LEFT JOIN platforms p ON gp.platform_id = p.platform_id
+    GROUP BY g.game_id, ge.genre_name;
   `);
+
   return rows;
 }
 
 const getGamesByPlatform = async (platform) => {
   const { rows } = await pool.query(`
-    SELECT g.title
+    SELECT 
+      g.title, 
+      g.img_url,
+      ge.genre_name
     FROM games g
+    JOIN genres ge ON g.genre_id = ge.genre_id
     JOIN game_platforms gp ON g.game_id = gp.game_id
     JOIN platforms p ON gp.platform_id = p.platform_id
     WHERE p.platform_name = '${platform}'
@@ -30,19 +35,20 @@ const getGamesByPlatform = async (platform) => {
 }
 
 const getGamesByGenre = async (genre) => {
+
   const { rows } = await pool.query(`
     SELECT 
-      g.title AS game_title, 
-      ge.genre_name AS genre, 
-      GROUP_CONCAT(p.platform_name ORDER BY p.platform_name SEPARATOR ', ') AS platforms
+      g.title, 
+      STRING_AGG(p.platform_name, ', ') AS platforms
     FROM games g
     JOIN genres ge ON g.genre_id = ge.genre_id
     JOIN game_platforms gp ON g.game_id = gp.game_id
     JOIN platforms p ON gp.platform_id = p.platform_id
     WHERE ge.genre_name = '${genre}'
-    GROUP BY g.game_id, g.title, ge.genre_name
-    ORDER BY g.title;
+    GROUP BY g.title;   
   `);
+
+
 
   return rows;
 }

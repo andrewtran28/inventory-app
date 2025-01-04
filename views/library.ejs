@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+  </head>
+  <body>
+    <%- include('header') %>
+    <h1>Library: <%= heading %> Games</h1>
+    <ul>
+      <% games.forEach((game) => { %>
+        <li>
+          <%= game.title %> | <%= game.genre_name %> | <%= game.platforms %>
+        </li>
+      <% }); %>
+    </ul>
+
+    <a href="/">Return to Home Page</a>
+  </body>
+</html>

@@ -33,7 +33,7 @@
         <ul class="list-genres">
           <% genres.forEach((genre) => { %>
             <li class="list-genre">
-              <a class="genre" href="/library?genre=<%= genres.genre_name %>">
+              <a class="genre" href="/library?genre=<%= genre.genre_name %>">
                 <%= genre.genre_name %>
               </a>
               <!-- <a href="/library/delete/genre?genre=<%= genre.genre_name %>" class="delete-genre">Delete</a> -->
