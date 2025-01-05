@@ -6,49 +6,76 @@ const getAllGames = async () => {
       g.title,
       g.img_url,
       ge.genre_name,
-      STRING_AGG(p.platform_name, ', ') AS platforms
+      STRING_AGG(p.platform_name, ', ' ORDER BY 
+        CASE 
+          WHEN p.platform_name = 'Other' THEN 1 
+          ELSE 0 
+        END, 
+        p.platform_name) AS platforms
     FROM games g
     LEFT JOIN genres ge ON g.genre_id = ge.genre_id
     LEFT JOIN game_platforms gp ON g.game_id = gp.game_id
     LEFT JOIN platforms p ON gp.platform_id = p.platform_id
-    GROUP BY g.game_id, ge.genre_name;
-  `);
-
-  return rows;
-}
-
-const getGamesByPlatform = async (platform) => {
-  const { rows } = await pool.query(`
-    SELECT 
-      g.title, 
-      g.img_url,
-      ge.genre_name
-    FROM games g
-    JOIN genres ge ON g.genre_id = ge.genre_id
-    JOIN game_platforms gp ON g.game_id = gp.game_id
-    JOIN platforms p ON gp.platform_id = p.platform_id
-    WHERE p.platform_name = '${platform}'
+    GROUP BY g.game_id, ge.genre_name
     ORDER BY g.title;
   `);
 
   return rows;
 }
 
+const getGamesByPlatform = async (platform) => {
+    // Query to find all games available on the given platform
+    const platformGames = await pool.query(`
+      SELECT g.game_id
+      FROM games g
+      JOIN game_platforms gp ON g.game_id = gp.game_id
+      JOIN platforms p ON gp.platform_id = p.platform_id
+      WHERE p.platform_name = $1`, [platform]);
+
+    // Extract game IDs from the result
+    const gameIds = platformGames.rows.map(row => row.game_id);
+
+    // Query to get detailed information about the games
+    const { rows } = await pool.query(`
+      SELECT 
+        g.title,
+        ge.genre_name,
+        STRING_AGG(p.platform_name, ', ' ORDER BY 
+          CASE 
+            WHEN p.platform_name = 'Other' THEN 1 
+            ELSE 0 
+          END, 
+          p.platform_name) AS platforms
+      FROM games g
+      LEFT JOIN genres ge ON g.genre_id = ge.genre_id
+      LEFT JOIN game_platforms gp ON g.game_id = gp.game_id
+      LEFT JOIN platforms p ON gp.platform_id = p.platform_id
+      WHERE g.game_id = ANY($1)
+      GROUP BY g.game_id, ge.genre_name
+    `, [gameIds]);
+
+    return rows;
+};
+
 const getGamesByGenre = async (genre) => {
 
   const { rows } = await pool.query(`
     SELECT 
       g.title, 
-      STRING_AGG(p.platform_name, ', ') AS platforms
+      ge.genre_name,
+      STRING_AGG(p.platform_name, ', ' ORDER BY 
+        CASE 
+          WHEN p.platform_name = 'Other' THEN 1 
+          ELSE 0 
+        END, 
+        p.platform_name) AS platforms
     FROM games g
     JOIN genres ge ON g.genre_id = ge.genre_id
     JOIN game_platforms gp ON g.game_id = gp.game_id
     JOIN platforms p ON gp.platform_id = p.platform_id
-    WHERE ge.genre_name = '${genre}'
-    GROUP BY g.title;   
-  `);
-
-
+    WHERE ge.genre_name = $1
+    GROUP BY g.title, ge.genre_name;
+  `, [genre]);
 
   return rows;
 }
@@ -59,25 +86,56 @@ const getGameById = async (id) => {
 }
 
 const addGame = async (name, platforms, genre, image) => {
-  await pool.query(`
-    INSERT INTO GENRES (genre_name)
-    VALUES (${genre})
-    ON DUPLICATE KEY UPDATE genre_id = genre_id;
+  // Insert the genre if it doesn't exist and get its ID
+  const genreResult = await pool.query(`
+    WITH genre_insert AS (
+      INSERT INTO genres (genre_name)
+      SELECT CAST($1 AS VARCHAR)
+      WHERE NOT EXISTS (SELECT 1 FROM genres WHERE genre_name = CAST($1 AS VARCHAR))
+      RETURNING genre_id
+    )
+    SELECT genre_id FROM genre_insert
+    UNION ALL
+    SELECT genre_id FROM genres WHERE genre_name = CAST($1 AS VARCHAR);`,
+    [genre]
+  );
+  const genreId = genreResult.rows[0].genre_id;
 
-    INSERT INTO games (title, genre_id)
-    VALUES ('${name}', (SELECT genre_id FROM genres WHERE genre_name = '${genre}'));
-  `);
-  
-  platforms.forEach(async (platform) => {
-    await pool.query(`
-      INSERT INTO platforms (platform_name)
-      VALUES ('${platform}')
-      ON DUPLICATE KEY UPDATE platform_id = platform_id;
-  
-      INSERT INTO game_platforms (game_id, platform_id)
-      VALUES ((SELECT game_id FROM games WHERE title = '${name}'), (SELECT platform_id FROM platforms WHERE platform_name = '${platform}'));
-    `);
-  })
+  // Insert the game and get its ID
+  const gameResult = await pool.query(`
+    INSERT INTO games (title, img_url, genre_id)
+    VALUES ($1, $2, $3)
+    RETURNING game_id;`,
+    [name, image, genreId] // Replace with actual image URL if applicable
+  );
+  const gameId = gameResult.rows[0].game_id;
+
+  // Insert platforms if they don't exist and get their IDs
+  const platformIds = [];
+  for (const platform of platforms) {
+    const platformResult = await pool.query(`
+      WITH platform_insert AS (
+        INSERT INTO platforms (platform_name)
+        SELECT CAST($1 AS VARCHAR)
+        WHERE NOT EXISTS (SELECT 1 FROM platforms WHERE platform_name = CAST($1 AS VARCHAR))
+        RETURNING platform_id
+      )
+      SELECT platform_id FROM platform_insert
+      UNION ALL
+      SELECT platform_id FROM platforms WHERE platform_name = CAST($1 AS VARCHAR);`,
+      [platform]
+    );
+    platformIds.push(platformResult.rows[0].platform_id);
+  }
+
+  // Associate the game with the platforms
+  for (const platformId of platformIds) {
+    await pool.query(
+      `INSERT INTO game_platforms (game_id, platform_id)
+      VALUES ($1, $2);`,
+      [gameId, platformId]
+    );
+  }
 }
 
 //Not complete yet
@@ -93,30 +151,153 @@ const updateGame = async (id, name, platform, genre, image) => {
 }
 
 const getDistinctPlatforms = async () => {
-  const { rows } = await pool.query(`SELECT * FROM platforms ORDER BY platform_name;`);
+  const { rows } = await pool.query(`
+    SELECT * FROM platforms
+    ORDER BY CASE
+      WHEN platform_name = 'Other' THEN 1
+      ELSE 0
+    END, platform_name;
+  `);
   
   return rows;
 }
 
 const getDistinctGenres =  async () => {
-  const { rows } = await pool.query(`SELECT * FROM genres ORDER BY genre_name;`);
+  const { rows } = await pool.query(`
+    SELECT * FROM genres
+    ORDER BY CASE
+      WHEN genre_name = 'Other' THEN 1
+      ELSE 0
+    END, genre_name;
+  `);
 
   return rows;
 }
 
-//Not complete yet
 const deletePlatform = async (platform) => {
-  await pool.query(`UPDATE game_library SET platform='other' WHERE platform='${platform}';`);
+    // Check if there are any games where the given platform is the only platform
+    const gameCheckResult = await pool.query(`
+      SELECT game_id 
+       FROM game_platforms 
+       WHERE platform_id = (SELECT platform_id FROM platforms WHERE platform_name = $1)
+       GROUP BY game_id
+       HAVING COUNT(platform_id) = 1;`,
+      [platform]
+    );
+
+    // If there are games where the platform is the only one, reassign them to 'Other'
+    if (gameCheckResult.rows.length > 0) {
+      const gameIds = gameCheckResult.rows.map(row => row.game_id);
+      
+      // First, check if 'Other' exists, if not, insert it
+      const otherPlatformResult = await pool.query(`SELECT platform_id FROM platforms WHERE platform_name = 'Other';`);
+      
+      let otherPlatformId;
+      if (otherPlatformResult.rows.length === 0) {
+        // Insert 'Other' platform if it doesn't exist
+        const insertOtherResult = await pool.query(
+          `INSERT INTO platforms (platform_name) 
+           VALUES ('Other') 
+           RETURNING platform_id;`
+        );
+        otherPlatformId = insertOtherResult.rows[0].platform_id;
+      } else {
+        otherPlatformId = otherPlatformResult.rows[0].platform_id;
+      }
+
+      // Update these games to be associated with the 'Other' platform
+      for (const gameId of gameIds) {
+        await pool.query(
+          `UPDATE game_platforms
+           SET platform_id = $1
+           WHERE game_id = $2 AND platform_id = (SELECT platform_id FROM platforms WHERE platform_name = $3);`,
+          [otherPlatformId, gameId, platform]
+        );
+      }
+    }
+
+    // Now, delete the platform from game_platforms and platforms
+    await pool.query(
+      `DELETE FROM game_platforms
+       WHERE platform_id = (SELECT platform_id FROM platforms WHERE platform_name = $1);`,
+      [platform]
+    );
+
+    await pool.query(
+      `DELETE FROM platforms
+       WHERE platform_name = $1;`,
+      [platform]
+    );
+    
+    console.log(`Platform '${platform}' and its relations have been successfully deleted.`);
+}
+
+const deleteGenre = async (genre) => {
+  // Check if there are any games where the given genre is the only genre
+  const gameCheckResult = await pool.query(`
+    SELECT game_id 
+      FROM games 
+      WHERE genre_id = (SELECT genre_id FROM genres WHERE genre_name = $1)
+      GROUP BY game_id
+      HAVING COUNT(genre_id) = 1;`,
+    [genre]
+  );
+
+  // If there are games where the genre is the only one, reassign them to 'Other'
+  if (gameCheckResult.rows.length > 0) {
+    const gameIds = gameCheckResult.rows.map(row => row.game_id);
+
+    // First, check if 'Other' genre exists, if not, insert it
+    const otherGenreResult = await pool.query(`SELECT genre_id FROM genres WHERE genre_name = 'Other';`);
+
+    let otherGenreId;
+    if (otherGenreResult.rows.length === 0) {
+      // Insert 'Other' genre if it doesn't exist
+      const insertOtherResult = await pool.query(
+        `INSERT INTO genres (genre_name) 
+          VALUES ('Other') 
+          RETURNING genre_id;`
+      );
+      otherGenreId = insertOtherResult.rows[0].genre_id;
+    } else {
+      otherGenreId = otherGenreResult.rows[0].genre_id;
+    }
+
+    // Update these games to be associated with the 'Other' genre
+    for (const gameId of gameIds) {
+      await pool.query(`
+        UPDATE games
+          SET genre_id = $1
+          WHERE game_id = $2 AND genre_id = (SELECT genre_id FROM genres WHERE genre_name = $3);`,
+        [otherGenreId, gameId, genre]
+      );
+    }
+  }
+
+  // Now, delete the genre from the games table and genres table
+  await pool.query(`
+    DELETE FROM games
+      WHERE genre_id = (SELECT genre_id FROM genres WHERE genre_name = $1);`,
+    [genre]
+  );
+
+  await pool.query(`
+    DELETE FROM genres
+      WHERE genre_name = $1;`,
+    [genre]
+  );
+
+  console.log(`Genre '${genre}' and its relations have been successfully deleted.`);
 }
 
 const deleteGameById = async (id) => {
   //Also deletes associated platform/genre if the game was the only title in that platform or genre.
   await pool.query(`
     DELETE FROM game_platforms
-    WHERE game_id = X;
+    WHERE game_id = $1;
 
     DELETE FROM games
-    WHERE game_id = X;
+    WHERE game_id = $1;
 
     DELETE FROM platforms
     WHERE platform_id NOT IN (
@@ -126,7 +307,7 @@ const deleteGameById = async (id) => {
     AND platform_id IN (
       SELECT platform_id
       FROM game_platforms
-      WHERE game_id = X
+      WHERE game_id = $1
     );
 
     DELETE FROM genres
@@ -137,9 +318,9 @@ const deleteGameById = async (id) => {
     AND genre_id IN (
       SELECT genre_id
       FROM games
-      WHERE game_id = X
+      WHERE game_id = $1
     );
-  `);
+  `, [id]);
 }
 
 module.exports = {

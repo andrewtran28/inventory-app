@@ -7,8 +7,9 @@ const { validator, editValidator } = require("../controllers/validator.js");
 
 indexRouter.get("/library/new", gamesController.getNewGameForm);
 indexRouter.post("/library/new", validator, gamesController.submitNewGame);
-// indexRouter.post("/library/delete/platform", gamesController.platformDeleteVerifier);
-// indexRouter.get("/library/delete/platform", gamesController.deletePlatform); 
+
+indexRouter.post("/library/delete/platform", gamesController.platformDeleteVerifier);
+indexRouter.get("/library/delete/platform", gamesController.deletePlatform); 
 
 // indexRouter.post("/library/delete/genre", gamesController.genreDeleteVerifier);
 // indexRouter.get("/library/delete/genre", gamesController.deleteGenre);

@@ -4,6 +4,11 @@ const { Client } = require("pg");
 require('dotenv').config();
 
 const SQL = `
+  DROP TABLE IF EXISTS genres CASCADE;
+  DROP TABLE IF EXISTS games CASCADE;
+  DROP TABLE IF EXISTS platforms CASCADE;
+  DROP TABLE IF EXISTS game_platforms CASCADE;
+
   CREATE TABLE genres (
     genre_id SERIAL PRIMARY KEY,
     genre_name VARCHAR(100) NOT NULL
@@ -37,14 +42,16 @@ const SQL = `
   ('Fighting'),
   ('Racing'),
   ('Horror'),
-  ('Puzzle');
+  ('Puzzle'),
+  ('Other');
 
   INSERT INTO platforms (platform_name) VALUES 
   ('PC'),
   ('PlayStation'),
   ('Xbox'),
   ('Nintendo Switch'),
-  ('Mobile');
+  ('Mobile'),
+  ('Other');
 
   INSERT INTO games (title, genre_id) VALUES 
   ('The Witcher 3: Wild Hunt', 2),  -- RPG

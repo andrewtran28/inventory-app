@@ -3,7 +3,7 @@
   <body>
     <ul class="error">
       <% if (errors) {%>
-        <% errors.forEach(function(error) { %>
+        <% errors.forEach((error) => { %>
           <%if (error.path == selector) { %>
             <li><%= error.msg %></li>
           <%}%>

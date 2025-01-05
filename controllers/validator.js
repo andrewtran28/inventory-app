@@ -7,14 +7,12 @@ const validator = [
     .isLength({ min: 1, max: 100}).withMessage("Game name must be between 1-100 characters.")
     .bail(),
   body("gamePlatform").trim()
-    .notEmpty().withMessage("Platform name(s) must be between 1-20 characters, and separated by commas for multiple platforms.")
-    .bail()
-    .isLength({ min: 1, max: 20}).withMessage("Platform name(s) must be between 1-20 characters, and separated by commas for multiple platforms.")
+    .matches(/^[a-zA-Z0-9, ]*$/).withMessage("Platforms must only contain letters or numbers, and separated by commas if there are multiple platforms.")
+    .isLength({ max: 100})
     .bail(),
-  body("gamePlatform").trim()
-    .notEmpty().withMessage("Genre name(s) must be between 1-20 characters, and separated by commas for multiple genres.")
-    .bail()
-    .isLength({ min: 1, max: 20}).withMessage("Platform name(s) must be between 1-20 characters, and separated by commas for multiple genres.")
+  body("gameGenre").trim()
+    .matches(/^[a-zA-Z0-9 ]*$/)
+    .isLength({ max: 20 }).withMessage("Genre must be a maximum of 20 characters or empty.")
     .bail(),
 ]
 
