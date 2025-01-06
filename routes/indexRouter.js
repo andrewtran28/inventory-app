@@ -17,9 +17,13 @@ indexRouter.get("/library/delete/genre", gamesController.deleteGenre);
 // indexRouter.post("/library/delete/game", gamesController.gameDeleteVerifier);
 // indexRouter.get("/library/delete/game", gamesController.deleteGame);
 
-// indexRouter.post("/library/update/:id", validator, editValidator, gamesController.submitUpdateGame);
-// indexRouter.get("/library/update/:id", gamesController.getUpdateGameForm);
+indexRouter.post("/game/delete/:id", gamesController.gameDeleteVerifier);
+indexRouter.get("/game/delete/:id", gamesController.deleteGame);
 
+// indexRouter.post("/game/:gameId/update", validator, editValidator, gamesController.submitUpdateGame);
+// indexRouter.get("/game/:gameId/update", gamesController.getUpdateGameForm);
+
+indexRouter.get("/game/:gameId", gamesController.getGameInfo);
 indexRouter.get("/library", gamesController.getGames);
 indexRouter.get("/", indexController.getIndex);
 

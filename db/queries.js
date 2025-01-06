@@ -4,6 +4,7 @@ const getAllGames = async () => {
   const { rows } = await pool.query(`
     SELECT
       g.title,
+      g.game_id,
       g.img_url,
       ge.genre_name,
       STRING_AGG(p.platform_name, ', ' ORDER BY 
@@ -39,6 +40,7 @@ const getGamesByPlatform = async (platform) => {
     const { rows } = await pool.query(`
       SELECT 
         g.title,
+        g.game_id,
         ge.genre_name,
         STRING_AGG(p.platform_name, ', ' ORDER BY 
           CASE 
@@ -62,6 +64,7 @@ const getGamesByGenre = async (genre) => {
   const { rows } = await pool.query(`
     SELECT 
       g.title, 
+      g.game_id,
       ge.genre_name,
       STRING_AGG(p.platform_name, ', ' ORDER BY 
         CASE 
@@ -74,15 +77,33 @@ const getGamesByGenre = async (genre) => {
     JOIN game_platforms gp ON g.game_id = gp.game_id
     JOIN platforms p ON gp.platform_id = p.platform_id
     WHERE ge.genre_name = $1
-    GROUP BY g.title, ge.genre_name;
+    GROUP BY g.game_id, ge.genre_name;
   `, [genre]);
 
   return rows;
 }
 
-const getGameById = async (id) => {
-  const { row } = await pool.query(`SELECT title AS game_title FROM games WHERE game_id='${id}';`);
-  return row;
+const getGameById = async (gameId) => {
+  const { rows } = await pool.query(`
+    SELECT 
+      g.title,
+      g.game_id,
+      ge.genre_name AS genre,
+      STRING_AGG(p.platform_name, ', ' ORDER BY 
+        CASE 
+          WHEN p.platform_name = 'Other' THEN 1 
+          ELSE 0 
+        END, 
+        p.platform_name) AS platforms
+    FROM games g
+    LEFT JOIN genres ge ON g.genre_id = ge.genre_id
+    LEFT JOIN game_platforms gp ON g.game_id = gp.game_id
+    LEFT JOIN platforms p ON gp.platform_id = p.platform_id
+    WHERE g.game_id = $1
+    GROUP BY g.game_id, ge.genre_name;
+  `, [gameId]);
+
+  return rows;
 }
 
 const addGame = async (name, platforms, genre, image) => {
@@ -216,20 +237,20 @@ const deletePlatform = async (platform) => {
       }
     }
 
-    // Now, delete the platform from game_platforms and platforms
-    await pool.query(
-      `DELETE FROM game_platforms
-       WHERE platform_id = (SELECT platform_id FROM platforms WHERE platform_name = $1);`,
-      [platform]
-    );
+    // // Now, delete the platform from game_platforms and platforms
+    // await pool.query(
+    //   `DELETE FROM game_platforms
+    //    WHERE platform_id = (SELECT platform_id FROM platforms WHERE platform_name = $1);`,
+    //   [platform]
+    // );
 
-    await pool.query(
-      `DELETE FROM platforms
-       WHERE platform_name = $1;`,
-      [platform]
-    );
-    
-    console.log(`Platform '${platform}' and its relations have been successfully deleted.`);
+    // await pool.query(
+    //   `DELETE FROM platforms
+    //    WHERE platform_name = $1;`,
+    //   [platform]
+    // );
+
+    purgeEmptyCategories();
 }
 
 const deleteGenre = async (genre) => {
@@ -275,53 +296,54 @@ const deleteGenre = async (genre) => {
     }
   }
 
-  // Now, delete the genre from the games table and genres table
-  await pool.query(`
-    DELETE FROM games
-      WHERE genre_id = (SELECT genre_id FROM genres WHERE genre_name = $1);`,
-    [genre]
-  );
+  // // Now, delete the genre from the games table and genres table
+  // await pool.query(`
+  //   DELETE FROM games
+  //     WHERE genre_id = (SELECT genre_id FROM genres WHERE genre_name = $1);`,
+  //   [genre]
+  // );
 
-  await pool.query(`
-    DELETE FROM genres
-      WHERE genre_name = $1;`,
-    [genre]
-  );
+  // await pool.query(`
+  //   DELETE FROM genres
+  //     WHERE genre_name = $1;`,
+  //   [genre]
+  // );
 
-  console.log(`Genre '${genre}' and its relations have been successfully deleted.`);
+  purgeEmptyCategories();
 }
 
 const deleteGameById = async (id) => {
-  //Also deletes associated platform/genre if the game was the only title in that platform or genre.
   await pool.query(`
-    DELETE FROM game_platforms
-    WHERE game_id = $1;
-
+    WITH deleted_platforms AS (
+      DELETE FROM game_platforms
+      WHERE game_id = $1
+      RETURNING platform_id
+    )
     DELETE FROM games
     WHERE game_id = $1;
+  `, [id]);
 
+  purgeEmptyCategories();
+}
+
+const purgeEmptyCategories = async () => {
+  // Clean up platforms not associated with any games
+  await pool.query(`
     DELETE FROM platforms
     WHERE platform_id NOT IN (
       SELECT DISTINCT platform_id
       FROM game_platforms
-    )
-    AND platform_id IN (
-      SELECT platform_id
-      FROM game_platforms
-      WHERE game_id = $1
     );
+  `);
 
+  // Clean up genres not associated with any games
+  await pool.query(`
     DELETE FROM genres
     WHERE genre_id NOT IN (
       SELECT DISTINCT genre_id
       FROM games
-    )
-    AND genre_id IN (
-      SELECT genre_id
-      FROM games
-      WHERE game_id = $1
     );
-  `, [id]);
+  `);
 }
 
 module.exports = {

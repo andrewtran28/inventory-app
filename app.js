@@ -14,9 +14,12 @@ app.set("view engine", "ejs");
 
 app.use("/", indexRouter);
 app.use("/library", indexRouter);
-app.use("/library/new", indexRouter);
+app.use("/game", indexRouter);
+// app.use("/library/game", indexRouter);
+// app.use("/library/new", indexRouter);
+
 // app.use("/library/delete", indexRouter);
-app.use("/library/update:id", indexRouter);
+// app.use("/library/update:id", indexRouter);
 
 // app.get("*",(req, res) => {
 //     res.render("./views/errors/error404.ejs") 

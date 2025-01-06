@@ -15,6 +15,17 @@ const getGames = asyncHandler(async (req, res) => {
   }
 });
 
+const getGameInfo = asyncHandler(async (req,res) => {
+  const [game] = await query.getGameById(req.params.gameId);
+  res.render("game", {
+    title: game.title,
+    gameTitle: game.title,
+    gameId: game.game_id,
+    platform: game.platforms,
+    genre: game.genre,
+  });
+});
+
 const getNewGameForm = asyncHandler(async (req, res) => {
   res.render("newGame", {
     title: "New Game",
@@ -136,29 +147,42 @@ const genreDeleteVerifier = asyncHandler(async(req, res) => {
 
 //Not implemented yet
 const deleteGame = asyncHandler(async(req, res) => {
+  const [game] = await query.getGameById(req.query.id);
+  console.log(game);
   res.render('delete', {
-    title: "Delete Game?",
-    confirm: `/library/delete/game?game=${req.query.game}`,
+    title: `Delete ${game.title}?`,
+    confirm: `/game/delete/id?id=${req.query.id}`,
     pass: "",
+    deleteItem: game.title,
+    selector: "game",
   });
 });
 
 //Not implemented yet
 const gameDeleteVerifier = asyncHandler(async(req, res) => {
+  const [game] = await query.getGameById(req.query.id);
   if(req.body.deletePass == process.env.ADMINPASSWORD) {
-    query.deleteGame(req.query.brand);
+    console.log(req.query.id);
+    query.deleteGameById(req.query.id);
     res.redirect("/");
   } else {
     res.render("delete", {
-      title: "Delete Game?",
-      confirm: `/library/delete/game?game=${req.query.game}`,
+      title: `Delete ${req.query.title}}?`,
+      confirm: `/game/delete/id?id=${req.query.id}`,
       pass: "Invalid Password.",
+      deleteItem: game.title,
+      selector: "game",
     });
   }
 })
 
+const getGameImage = (gameName) => {
+
+};
+
 module.exports = {
   getGames,
+  getGameInfo,
   getNewGameForm,
   submitNewGame,
   getUpdateGameForm,

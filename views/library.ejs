@@ -11,7 +11,7 @@
     <ul>
       <% games.forEach((game) => { %>
         <li>
-          <%= game.title %> | <%= game.genre_name %> | <%= game.platforms %>
+          <a href=<%=`/game/${game.game_id}`%>><%= game.title %></a> | <%= game.genre_name %> | <%= game.platforms %>
         </li>
       <% }); %>
     </ul>
