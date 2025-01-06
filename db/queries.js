@@ -233,6 +233,7 @@ const deletePlatform = async (platform) => {
 }
 
 const deleteGenre = async (genre) => {
+  console.log(genre);
   // Check if there are any games where the given genre is the only genre
   const gameCheckResult = await pool.query(`
     SELECT game_id 
@@ -333,5 +334,6 @@ module.exports = {
   getDistinctPlatforms,
   getDistinctGenres,
   deletePlatform,
+  deleteGenre,
   deleteGameById,
 };

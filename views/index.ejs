@@ -21,9 +21,6 @@
                 <a href="/library/delete/platform?platform=<%= platform.platform_name %>" class="delete-platform">Delete</a>
             </li>
           <% }); %>
-          <!-- <li class="list-platform">
-            <a class="platform" href="/library?platform=Other">Other</a>
-          </li> -->
         </ul>
       </div>
 
@@ -36,15 +33,13 @@
               <a class="genre" href="/library?genre=<%= genre.genre_name %>">
                 <%= genre.genre_name %>
               </a>
-              <!-- <a href="/library/delete/genre?genre=<%= genre.genre_name %>" class="delete-genre">Delete</a> -->
+              <a href="/library/delete/genre?genre=<%= genre.genre_name %>" class="delete-genre">Delete</a>
             </li>
           <% }); %>
-            <!-- <li class="list-genre">
-              <a class="genre" href="/library?genre=Other">Other</a>
-            </li> -->
         </ul>
-
       </div>
+
+      <hr>
     </main>
 
   </body>

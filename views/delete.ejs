@@ -6,7 +6,7 @@
     <title><%= title %></title>
   </head>
   <body>
-      <h1>Delete the <%= deletePlatform %> platform?</h1>
+      <h1>Delete the <%= deleteItem %> <%= selector %>?</h1>
       <form class="passwordVerifier" method="POST"  action=<%= confirm %>>
         <label for="deletePass" class="deleteLabel">Password: </label>
         <input type="password" class="deleteInput" name="deletePass" id="deletePass">
@@ -14,5 +14,8 @@
         <br>
         <button type="submit" class="btn-delete">Delete</button>
       </form>
+
+      <br>
+      <a href="/">Return to Homepage</a>
   </body>
 </html>

@@ -24,14 +24,16 @@ const getNewGameForm = asyncHandler(async (req, res) => {
 
 const submitNewGame = asyncHandler(async (req, res) => {
   const result = validationResult(req);
-  let platformArr;
 
   if(result.isEmpty()) {
-
+    let platformArr;
     if (req.body.gamePlatform == "") {
       platformArr = ["Other"];
     } else {
-      platformArr = req.body.gamePlatform.split(',').map(platform => platform.trim());
+      platformArr = req.body.gamePlatform
+        .split(',')
+        .map(platform => platform.trim())
+        .sort((a, b) => a.localeCompare(b));
     }
 
     let gameURL = req.body.gameImg != "" ? req.body.gameImg : "../public/game.png";
@@ -80,10 +82,11 @@ const submitUpdateGame = asyncHandler(async(req, res) => {
 
 const deletePlatform = asyncHandler(async(req, res) => {
   res.render('delete', {
-    title: `Delete Platform`,
+    title: `Delete ${req.query.platform}?`,
     confirm: `/library/delete/platform?platform=${encodeURIComponent(req.query.platform)}`,
     pass: "",
-    deletePlatform: req.query.platform,
+    deleteItem: req.query.platform,
+    selector: "platform",
   });
 });
 
@@ -95,35 +98,43 @@ const platformDeleteVerifier = asyncHandler(async(req, res) => {
     res.redirect("/");
   } else {
     res.render("delete", {
-      title: `Delete the platform: ${req.query.platform}?`,
+      title: `Delete ${decodedPlatform}?`,
       confirm: `/library/delete/platform?platform=${req.query.platform}`,
       pass: "Invalid Password.",
-      deletePlatform: decodedPlatform,
+      deleteItem: decodedPlatform,
+      selector: "platform",
     });
   }
 })
 
 const deleteGenre = asyncHandler(async(req, res) => {
   res.render('delete', {
-    title: "Delete Genre?",
-    confirm: `/library/delete/genre?genre=${req.query.platform}`,
+    title: `Delete ${req.query.genre}?`,
+    confirm: `/library/delete/genre?genre=${encodeURIComponent(req.query.genre)}`,
     pass: "",
+    deleteItem: req.query.genre,
+    selector: "genre",
   });
 });
 
 const genreDeleteVerifier = asyncHandler(async(req, res) => {
+  const decodedGenre = decodeURIComponent(req.query.genre);
+
   if(req.body.deletePass == process.env.ADMINPASSWORD) {
-    query.deleteGenre(req.query.brand);
+    query.deleteGenre(req.query.genre);
     res.redirect("/");
   } else {
     res.render("delete", {
-      title: "Delete Genre?",
+      title: `Delete ${decodedGenre}?`,
       confirm: `/library/delete/genre?genre=${req.query.genre}`,
       pass: "Invalid Password.",
+      deleteItem: decodedGenre,
+      selector: "genre",
     });
   }
 })
 
+//Not implemented yet
 const deleteGame = asyncHandler(async(req, res) => {
   res.render('delete', {
     title: "Delete Game?",
@@ -132,6 +143,7 @@ const deleteGame = asyncHandler(async(req, res) => {
   });
 });
 
+//Not implemented yet
 const gameDeleteVerifier = asyncHandler(async(req, res) => {
   if(req.body.deletePass == process.env.ADMINPASSWORD) {
     query.deleteGame(req.query.brand);
@@ -144,7 +156,6 @@ const gameDeleteVerifier = asyncHandler(async(req, res) => {
     });
   }
 })
-
 
 module.exports = {
   getGames,
