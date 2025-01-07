@@ -42,16 +42,13 @@ const SQL = `
   ('Fighting'),
   ('Racing'),
   ('Horror'),
-  ('Puzzle'),
-  ('Other');
+  ('Puzzle');
 
   INSERT INTO platforms (platform_name) VALUES 
   ('PC'),
   ('PlayStation'),
   ('Xbox'),
-  ('Nintendo Switch'),
-  ('Mobile'),
-  ('Other');
+  ('Nintendo Switch');
 
   INSERT INTO games (title, genre_id) VALUES 
   ('The Witcher 3: Wild Hunt', 2),  -- RPG
@@ -98,27 +95,3 @@ async function main() {
 }
 
 main();
-
-// const SQL = `
-//   CREATE TABLE IF NOT EXISTS game_library (
-//   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-//   name VARCHAR( 255 ),
-//   platform VARCHAR ( 255 ),
-//   genre VARCHAR ( 255 )
-//   );
-
-//   INSERT INTO game_library (name, platform, genre)
-//   VALUES
-//   ('The Legend of Zelda: Breath of the Wild', 'Nintendo Switch', 'Action-Adventure'),
-//   ('Halo Infinite', 'Xbox Series X, PC', 'First-Person Shooter'),
-//   ('God of War Ragnarök', 'PlayStation 5, PlayStation 4', 'Action-Adventure'),
-//   ('Super Mario Odyssey', 'Nintendo Switch', 'Platformer'),
-//   ('Red Dead Redemption 2', 'PS4, Xbox One, PC', 'Action-Adventure'),
-//   ('Minecraft', 'PC, Xbox, PlayStation, Switch, Mobile', 'Sandbox'),
-//   ('Gran Turismo 7', 'PlayStation 5, PlayStation 4', 'Racing'),
-//   ('Fortnite', 'PC, Xbox, PlayStation, Switch, Mobile', 'Battle Royale'),
-//   ('Animal Crossing: New Horizons', 'Nintendo Switch', 'Life Simulation'),
-//   ('FIFA 23', 'PC, Xbox, PlayStation, Switch', 'Sports'),
-//   ('The Witcher 3: Wild Hunt', 'PC, PS4, Xbox One, Switch', 'Role-Playing Game'),
-//   ('Overwatch 2', 'PC, Xbox, PlayStation, Switch', 'First-Person Shooter')
-// `;

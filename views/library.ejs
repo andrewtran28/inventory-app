@@ -17,5 +17,12 @@
     </ul>
 
     <a href="/">Return to Home Page</a>
+    <br><br>
+    <%if (selector != "") { %>
+      <a href="/library/delete/<%= selector %>?<%= selector %>=<%= heading %>">
+        <button>Delete <%= heading %> <%= selector %></button>
+      </a>
+    <% } %>
+
   </body>
 </html>

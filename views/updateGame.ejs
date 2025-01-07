@@ -6,21 +6,48 @@
     <title><%= title %></title>
   </head>
   <body>
-    <form method="POST" class="form-update" action="/library/update/<%= id %>">
-      <h1 class="form-title">Update Game Information</h1>
+    <form method="POST" class="form-update" action="/game/update/<%= id %>">
+      <h1 class="form-title">Update game details for <%= name %></h1>
         <label for="gameName">Game Title: </label>
         <input type="text" name="gameName" value="<%= name %>">
-        <%- include('formErrors', {errors: errors, selector: 'gameName' }) %>
+        <%- include('customErrors', {errors: errors, selector: 'gameName' }) %>
         <br>
         <label for="gamePlatform">Platform(s): </label>
-        <input type="text" name="gamePlatform" value="<%= platform %>">
-        <%- include('formErrors', {errors: errors, selector: 'gamePlatform' }) %>
+        <input type="text" name="gamePlatform" id="game-platform" value="<%= platform %>" placeholder="Separate multiple platforms with commas">
+        <%- include('customErrors', {errors: errors, selector: 'gamePlatform' }) %>
         <br>
-        <label for="gameGenre">Platform(s): </label>
+        <label for="gameGenre">Genre: </label>
         <input type="text" name="gameGenre" value="<%= genre %>">
-        <%- include('formErrors', {errors: errors, selector: 'gameGenre' }) %>
+        <%- include('customErrors', {errors: errors, selector: 'gameGenre' }) %>
         <br>
-        <button class="btn-update" type="submit">Update</button>
+        <button class="btn-update" type="submit">Save</button>
     </form>
+
+    <br>
+    <button>Cancel</button>
   </body>
 </html>
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+
+  <form method="POST" action="/library/new" class="form-cont">
+    <h1 class="form-title">Add a New Game to Library</h1>
+    <label for="gameName">Game Title: </label>
+    <input type="text" name="gameName" id="game-name" required>
+    <%- include('customErrors', {errors: errors, selector: 'gameName'}) %>
+    <br>
+    <label for="gamePlatform">Platform(s): </label>
+    <input type="text" name="gamePlatform" id="game-platform" placeholder="Separate multiple platforms with commas">
+    <%- include('customErrors', {errors: errors, selector: 'gamePlatform'}) %>
+    <br>
+    <label for="gameGenre">Genre: </label>
+    <input type="text" name="gameGenre" id="game-genre">
+    <%- include('customErrors', {errors: errors, selector: 'gameGenre'}) %>
+    <br>
+    <button class="btn-submit" type="submit">Submit</button>
+  </form>
+  </body>
+</html> -->

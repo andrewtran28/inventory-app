@@ -2,7 +2,7 @@ const { body } = require("express-validator");
 
 const validator = [
   body("gameName").trim()
-    .notEmpty().withMessage("Game name must be between 1-100 characters.")
+    .notEmpty().withMessage("Game title must be between 1-100 characters.")
     .bail()
     .isLength({ min: 1, max: 100}).withMessage("Game name must be between 1-100 characters.")
     .bail(),
@@ -11,7 +11,7 @@ const validator = [
     .isLength({ max: 100})
     .bail(),
   body("gameGenre").trim()
-    .matches(/^[a-zA-Z0-9 ]*$/)
+    .matches(/^[a-zA-Z0-9 ]*$/).withMessage("Genre must only contain letters or numbers.")
     .isLength({ max: 20 }).withMessage("Genre must be a maximum of 20 characters or empty.")
     .bail(),
 ]

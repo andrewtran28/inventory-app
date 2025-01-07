@@ -1,0 +1,79 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+
+body {
+  background-color: #393646;
+ 
+  color: white;
+  font-family: 'Geist', Arial, Helvetica, sans-serif;
+  font-size: 1.15rem;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#header {
+  background-color: #6D5D6E;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px 0;
+  font-weight: 600;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  margin: 0 20px;
+  font-size: 2.5rem;
+}
+.header-logo:hover {
+  color: #F4EEE0;
+}
+
+#logo {
+  height: 60px;
+  object-fit: contain;
+  margin: 0 10px;
+}
+
+.header-link {
+  margin: 0 20px;
+  padding: 10px 20px;
+  font-size: 1.5rem;
+}
+.header-link:hover {
+  color: #F4EEE0;
+}
+
+main {
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  width: 100%;
+}
+
+main h1 {
+  font-size: 3rem;
+  margin:15px 0;
+}
+
+hr {
+  width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+a:visited {
+  color: unset;
+}
+
+h1 {
+
+}

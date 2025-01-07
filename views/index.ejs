@@ -4,21 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
   <body>
-    <h1>This is the index page</h1>
     <%- include('header') %>
 
     <main>
       <div class="platforms-cont">
-        <h2>Platforms</h2>
+        <h1>Platforms</h1>
         <ul class="list-platforms">
           <% platforms.forEach((platform) => { %>
             <li class="list-platform">
                 <a class="platform" href="/library?platform=<%= platform.platform_name %>">
                     <%= platform.platform_name%>
                 </a>
-                <a href="/library/delete/platform?platform=<%= platform.platform_name %>" class="delete-platform">Delete</a>
             </li>
           <% }); %>
         </ul>
@@ -26,14 +25,13 @@
 
       <hr>
       <div class="genres-cont">
-        <h2>Genres</h2>
+        <h1>Genres</h1>
         <ul class="list-genres">
           <% genres.forEach((genre) => { %>
             <li class="list-genre">
               <a class="genre" href="/library?genre=<%= genre.genre_name %>">
                 <%= genre.genre_name %>
               </a>
-              <a href="/library/delete/genre?genre=<%= genre.genre_name %>" class="delete-genre">Delete</a>
             </li>
           <% }); %>
         </ul>
