@@ -7,13 +7,13 @@ const getGames = asyncHandler(async (req, res) => {
 
   if (Object.keys(req.query).length != 0 && Object.keys(req.query) == 'platform') {
     let games = await query.getGamesByPlatform(req.query.platform);
-    res.render('library', { title: "Game Library", heading: req.query.platform, selector: 'platform', games: games });
+    res.render('library', { title: "mingleeDB Platform", heading: req.query.platform, selector: 'platform', games: games });
   } else if (Object.keys(req.query).length != 0 && Object.keys(req.query) == 'genre') {
     let games = await query.getGamesByGenre(req.query.genre);
-    res.render('library', { title: "Game Library", heading: req.query.genre, selector: 'genre', games: games });
+    res.render('library', { title: "mingleeDB Genre", heading: req.query.genre, selector: 'genre', games: games });
   } else {
     let games = await query.getAllGames();
-    res.render('library', { title: "Game Library", heading: "All", selector: "", games: games });
+    res.render('library', { title: "mingleeDB Library", heading: "All", selector: "", games: games });
   }
 });
 
@@ -123,7 +123,7 @@ const platformDeleteVerifier = asyncHandler(async(req, res) => {
     res.render("delete", {
       title: `Delete ${decodedPlatform}?`,
       confirm: `/library/delete/platform?platform=${req.query.platform}`,
-      pass: "Invalid Password.",
+      pass: "Incorrect value. Nothing was deleted.",
       deleteItem: decodedPlatform,
       selector: "platform",
     });

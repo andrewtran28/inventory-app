@@ -21,7 +21,7 @@ const editValidator = [
     .custom(value => {
       return value == process.env.ADMIN_PASSWORD
     })
-    .withMessage("Incorrect password.")
+    .withMessage("Type 'delete' to confirm deletion. Note: Case sensitive.")
 ]
 
 module.exports = {
