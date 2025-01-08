@@ -101,9 +101,10 @@ hr {
 
 a {
   text-decoration: none;
+  color: white;
 }
 a:visited {
-  color: unset;
+  color: white;
 }
 a:hover {
   color: var(--text-hover);
