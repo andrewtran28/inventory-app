@@ -1,25 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
   <body>
-
-  <form method="POST" action="/library/new" class="form-cont">
-    <h1 class="form-title">Add a New Game to Library</h1>
-    <label for="gameName">Game Title: </label>
-    <input type="text" name="gameName" id="game-name" required>
-    <%- include('customErrors', {errors: errors, selector: 'gameName'}) %>
+    <%- include('header') %>
+    <main>
+      <h1 class="form-title">Add a New Game to Library</h1>
+      <br>
+      <form method="POST" action="/library/new" class="form-cont">
+        <label for="gameName">Game Title: </label>
+        <input type="text" name="gameName" id="game-name" required>
+        <%- include('customErrors', {errors: errors, selector: 'gameName'}) %>
+        <br>
+        <label for="gamePlatform">Platform(s): </label>
+        <input type="text" name="gamePlatform" id="game-platform" placeholder="Separate multiple platforms with commas">
+        <%- include('customErrors', {errors: errors, selector: 'gamePlatform'}) %>
+        <br>
+        <label for="gameGenre">Genre: </label>
+        <input type="text" name="gameGenre" id="game-genre">
+        <%- include('customErrors', {errors: errors, selector: 'gameGenre'}) %>
+        <br>
+        <button id="add-game" type="submit">Submit</button>
+      </form>
+  </main>
+    <hr>
     <br>
-    <label for="gamePlatform">Platform(s): </label>
-    <input type="text" name="gamePlatform" id="game-platform" placeholder="Separate multiple platforms with commas">
-    <%- include('customErrors', {errors: errors, selector: 'gamePlatform'}) %>
-    <br>
-    <label for="gameGenre">Genre: </label>
-    <input type="text" name="gameGenre" id="game-genre">
-    <%- include('customErrors', {errors: errors, selector: 'gameGenre'}) %>
-    <br>
-    <button class="btn-submit" type="submit">Submit</button>
-  </form>
-
-  <br>
-  <a href="/">Return to Homepage</a>
+    <a class="return" href="/">Return to Homepage</a>
   </body>
 </html>

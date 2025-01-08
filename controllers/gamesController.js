@@ -3,6 +3,8 @@ const query = require("../db/queries.js");
 const { validationResult } = require("express-validator");
 
 const getGames = asyncHandler(async (req, res) => {
+  await query.checkGameImages();
+
   if (Object.keys(req.query).length != 0 && Object.keys(req.query) == 'platform') {
     let games = await query.getGamesByPlatform(req.query.platform);
     res.render('library', { title: "Game Library", heading: req.query.platform, selector: 'platform', games: games });
@@ -17,14 +19,13 @@ const getGames = asyncHandler(async (req, res) => {
 
 const getGameInfo = asyncHandler(async (req,res) => {
   const [game] = await query.getGameById(req.params.gameId);
-  let gameImage = await getGameImage(game.title);
   res.render("game", {
     title: game.title,
     gameTitle: game.title,
     gameId: game.game_id,
     platform: game.platforms,
     genre: game.genre,
-    img_url: gameImage,
+    img_url: game.img_url,
   });
 });
 
@@ -37,7 +38,6 @@ const getNewGameForm = asyncHandler(async (req, res) => {
 
 const submitNewGame = asyncHandler(async (req, res) => {
   const result = validationResult(req);
-  console.log(result);
 
   if(result.isEmpty()) {
     let platformArr;
@@ -75,9 +75,7 @@ const getUpdateGameForm = asyncHandler(async(req, res) => {
 
 const submitUpdateGame = asyncHandler(async(req, res) => {
   const [game] = await query.getGameById(req.params.id);
-  console.log(game);
   const result = validationResult(req);
-  console.log(result);
   let platformArr;
   if (req.body.gamePlatform == "") {
     platformArr = ["Other"];
@@ -90,11 +88,9 @@ const submitUpdateGame = asyncHandler(async(req, res) => {
 
   if (result.isEmpty()) {
     let gameURL = req.body.gameImg != "" ? req.body.gameImg: "../public/game.png";
-    console.log("submitting");
     query.updateGame(req.params.id, req.body.gameName, platformArr, req.body.gameGenre, gameURL);
     res.redirect("/");
   } else {
-    console.log("Re-rendering");
     res.render("updateGame", {
       title: `Update ${game.title}`,
       id: game.game_id,
@@ -163,7 +159,6 @@ const genreDeleteVerifier = asyncHandler(async(req, res) => {
 
 const deleteGame = asyncHandler(async(req, res) => {
   const [game] = await query.getGameById(req.query.id);
-  console.log(game);
   res.render('delete', {
     title: `Delete ${game.title}?`,
     confirm: `/game/delete/id?id=${req.query.id}`,
@@ -176,7 +171,6 @@ const deleteGame = asyncHandler(async(req, res) => {
 const gameDeleteVerifier = asyncHandler(async(req, res) => {
   const [game] = await query.getGameById(req.query.id);
   if(req.body.deletePass == process.env.ADMINPASSWORD) {
-    console.log(req.query.id);
     query.deleteGameById(req.query.id);
     res.redirect("/");
   } else {
@@ -189,17 +183,6 @@ const gameDeleteVerifier = asyncHandler(async(req, res) => {
     });
   }
 })
-
-const getGameImage = async (gameName) => {
-  try {
-    const response = await fetch(`https://www.giantbomb.com/api/search/?api_key=${process.env.GAMEBOMB_API}&format=json&query=${gameName}&resources=game`);
-    const data = await response.json();
-    return data.results[0].image.original_url;
-  } catch (error) {
-    console.error('Error:', error);
-  }
-};
-
 
 module.exports = {
   getGames,

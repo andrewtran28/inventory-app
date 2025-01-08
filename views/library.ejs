@@ -4,25 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
     <%- include('header') %>
-    <h1>Library: <%= heading %> Games</h1>
-    <ul>
+
+    <main class="library-cont">
+      <h1><%= heading %> Games</h1>
       <% games.forEach((game) => { %>
-        <li>
-          <a href=<%=`/game/${game.game_id}`%>><%= game.title %></a> | <%= game.genre_name %> | <%= game.platforms %>
-        </li>
+        <a class="library-game" href=<%=`/game/${game.game_id}`%>>
+          <img class="lib-game-thumb" src="<%= game.thumb_url %>">
+          <div class="lib-game-info">
+            <div class="lib-game-title"><%= game.title %></div>
+            <br>
+            <div class="lib-game-genre">Genre: <%= game.genre_name %></div>
+            <div class="lib-game-platforms">Platform(s): <%= game.platforms %></div>
+          </div>
+        </a>
       <% }); %>
-    </ul>
-
-    <a href="/">Return to Home Page</a>
-    <br><br>
-    <%if (selector != "") { %>
-      <a href="/library/delete/<%= selector %>?<%= selector %>=<%= heading %>">
-        <button>Delete <%= heading %> <%= selector %></button>
-      </a>
-    <% } %>
-
+    </main>  
+    <hr>
+    <div class="btn-menu">
+      <a class="return"href="/">Return to Home Page</a>
+      <br>
+      <%if (selector != "") { %>
+        <a href="/library/delete/<%= selector %>?<%= selector %>=<%= heading %>">
+          <button class="btn-admin">Delete <%= heading %> <%= selector %></button>
+        </a>
+      <% } %>
+    </div>
   </body>
 </html>

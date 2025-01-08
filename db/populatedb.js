@@ -18,6 +18,7 @@ const SQL = `
     game_id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     img_url VARCHAR(255),
+    thumb_url VARCHAR(255),
     genre_id INT REFERENCES genres(genre_id) ON DELETE SET NULL
   );
 

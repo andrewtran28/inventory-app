@@ -4,18 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-      <h1>Delete the <%= deleteItem %> <%= selector %>?</h1>
-      <form class="passwordVerifier" method="POST"  action=<%= confirm %>>
-        <label for="deletePass" class="deleteLabel">Password: </label>
-        <input type="password" class="deleteInput" name="deletePass" id="deletePass">
-        <span class="error-message"><%= pass %></span>
-        <br>
-        <button type="submit" class="btn-delete">Delete</button>
-      </form>
+      <%- include('header') %>
+      <main>
+        <h1>Delete the <%= selector %>: <%= deleteItem %> ?</h1>
+        <form class="passwordVerifier" method="POST" autocomplete="off" action=<%= confirm %>>
+          <label for="deletePass" class="deleteLabel">Type 'delete' to confirm deletion.</label>
+          <br>
+          <input type="text" class="deleteInput" name="deletePass" id="deletePass">
+          <br>
+          <span class="error">Warning: You wll be deleting a <%= selector %> from the library. Genres or platforms that contain no games will also be deleted.</span>
+          <span class="error-message"><%= pass %></span>
+          <br>
+          <br>
+          <button type="submit" class="btn-admin">Delete</button>
+        </form>
+      </main>
 
       <br>
-      <a href="/">Return to Homepage</a>
+      <a class="return" href="/">Return to Homepage</a>
   </body>
 </html>

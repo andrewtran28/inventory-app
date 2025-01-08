@@ -2,8 +2,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
 
 body {
-  background-color: #393646;
- 
+  --background: #393646;
+  --item: #5C5470;
+  --item-hover:#73698d;
+  --text-hover: #edc872;
+  --gray-text: #c4c4c4;
+
+  background-color: var(--background);
   color: white;
   font-family: 'Geist', Arial, Helvetica, sans-serif;
   font-size: 1.15rem;
@@ -16,7 +21,7 @@ body {
 }
 
 #header {
-  background-color: #6D5D6E;
+  background-color: var(--item);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -32,7 +37,7 @@ body {
   font-size: 2.5rem;
 }
 .header-logo:hover {
-  color: #F4EEE0;
+  color: var(--text-hover);
 }
 
 #logo {
@@ -41,30 +46,55 @@ body {
   margin: 0 10px;
 }
 
-.header-link {
+.header-links {
   margin: 0 20px;
-  padding: 10px 20px;
-  font-size: 1.5rem;
+}
+
+.header-link {
+  margin: 0 10px;
+  padding: 10px 10px;
+  font-size: 1.75rem;
 }
 .header-link:hover {
-  color: #F4EEE0;
+  color: var(--text-hover);
+}
+
+button {
+  border-style: none;
+  border-radius: 5px;
+  font-weight: 600;
+  color: white;
+}
+
+#add-game {
+  background-color: #51a036;
+  padding: 10px 20px;
+  font-size: 1.75rem;
+}
+#add-game:hover {
+  background-color: #458d2d;
+  color: var(--text-hover);
+}
+#add-game:active {
+  background-color: #377024;
 }
 
 main {
-  border: 1px solid red;
-  display: flex;
-  flex-direction: column;
   max-width: 1200px;
   width: 100%;
+  margin: 0 20px;
 }
 
 main h1 {
-  font-size: 3rem;
-  margin:15px 0;
+  color: var(--text-hover);
+  margin: 15px 0;
 }
 
 hr {
-  width: 100%;
+  border-color: gray;
+  width: 90%;
+  margin: 30px 0 10px 0;
+  place-self: center;
 }
 
 a {
@@ -73,7 +103,145 @@ a {
 a:visited {
   color: unset;
 }
+a:hover {
+  color: var(--text-hover);
+}
 
-h1 {
+.platforms-cont, .genres-cont {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 175px);
+  justify-content: center;
+  justify-items: center;
+  gap: 30px;
+  margin: 10px;
+}
 
+.genres-cont {
+  grid-template-columns: repeat(auto-fill, 175px);
+}
+
+.platform, .genre {
+  background-color: var(--item);
+  border: 1px solid gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 175px;
+  width: 175px;
+  font-size: 1.65rem;
+}
+
+.genre {
+  height: 150px;
+  width: 150px;
+  font-size: 1.5rem;
+}
+
+.platform:hover, .genre:hover {
+  background-color: var(--item-hover);
+  transform: scale(1.05);
+  transition-duration: 0.1s;
+}
+
+.library-game {
+  background-color: var(--item);
+  border: 1px solid gray;
+  display: flex;
+  max-width: 100%;
+  width: 100%;
+  margin: 20px 0;
+}
+.library-game:hover {
+  background-color: var(--item-hover);
+  transform: scale(1.01);
+  transition-duration: 0.2s;
+}
+
+.lib-game-thumb {
+  object-fit: fill;
+  height: 200px;
+  width: 150px;
+}
+
+.lib-game-info {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  line-height: 1.5rem;
+}
+
+.lib-game-title {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.lib-game-genre, .lib-game-platforms {
+  color: var(--gray-text);
+  font-style: oblique;
+}
+
+.game-cont {
+  background-color: var(--item);
+  border: 1px solid gray;
+  display: flex;
+  margin: 20px;
+}
+
+.game-img {
+  object-fit: fill;
+  width: 450px;
+}
+
+.game-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 20px;
+  justify-content: space-between;
+}
+
+.game-id {
+  color: var(--gray-text);
+  font-style: oblique;
+}
+
+.return {
+  font-size: 1.5rem;
+}
+
+.btn-menu {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 10px;
+}
+
+.btn-admin {
+  background-color: rgb(140, 0, 40);
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 1.25rem;
+}
+.btn-admin:hover {
+  background-color: rgb(120, 0, 34);
+  color: var(--text-hover);
+}
+.btn-admin:active {
+  background-color: rgb(100, 0, 28);
+}
+
+form {
+  font-size: 1.5rem;
+}
+
+input {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  min-width: 500px;
+}
+
+.error {
+  color: rgb(255, 0, 0);
+  font-size: 1.1rem;
 }
