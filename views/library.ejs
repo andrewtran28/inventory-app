@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" type="image/x-icon" href="/game.png">
   </head>
   <body>
-    <%- include('header') %>
+    <%- include('partials/header') %>
 
     <main class="library-cont">
       <h1><%= heading %> Games</h1>
@@ -33,5 +34,7 @@
         </a>
       <% } %>
     </div>
+    
+    <%- include('partials/footer') %>
   </body>
 </html>

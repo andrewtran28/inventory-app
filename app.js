@@ -15,15 +15,10 @@ app.set("view engine", "ejs");
 app.use("/", indexRouter);
 app.use("/library", indexRouter);
 app.use("/game", indexRouter);
-// app.use("/library/game", indexRouter);
-// app.use("/library/new", indexRouter);
 
-// app.use("/library/delete", indexRouter);
-// app.use("/library/update:id", indexRouter);
-
-// app.get("*",(req, res) => {
-//     res.render("./views/errors/error404.ejs") 
-// });
+app.use((req, res) => {
+    res.status(404).render("error404");
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

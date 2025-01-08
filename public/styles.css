@@ -7,6 +7,7 @@ body {
   --item-hover:#73698d;
   --text-hover: #edc872;
   --gray-text: #c4c4c4;
+  --footer: #352F44;
 
   background-color: var(--background);
   color: white;
@@ -14,10 +15,11 @@ body {
   font-size: 1.15rem;
   margin: 0;
   padding: 0;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 #header {
@@ -215,6 +217,7 @@ a:hover {
   flex-direction: column;
   text-align: center;
   padding: 10px;
+  margin-bottom: 50px;
 }
 
 .btn-admin {
@@ -238,10 +241,22 @@ form {
 input {
   font-size: 1.5rem;
   line-height: 2rem;
-  min-width: 500px;
+  min-width: 600px;
 }
 
 .error {
   color: rgb(255, 0, 0);
+  font-size: 1.1rem;
+}
+
+#footer {
+  background-color: var(--footer);
+  color: var(--gray-text);
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 0;
   font-size: 1.1rem;
 }

@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" type="image/x-icon" href="/game.png">
   </head>
   <body>
-      <%- include('header') %>
+    <%- include('partials/header') %>
       <main>
         <h1>Delete the <%= selector %>: <%= deleteItem %> ?</h1>
-        <form class="passwordVerifier" method="POST" autocomplete="off" action=<%= confirm %>>
+        <form method="POST" autocomplete="off" action=<%= confirm %>>
           <label for="deletePass" class="deleteLabel">Type 'delete' to confirm deletion.</label>
           <br>
           <input type="text" class="deleteInput" name="deletePass" id="deletePass">
@@ -18,14 +19,14 @@
           <span class="error"><%= pass %></span>
           <br>
           <span class="error">Warning: You will be deleting a <%= selector %>. Genres or platforms that contain no games will also be deleted.</span>
-
-          <br>
           <br>
           <button type="submit" class="btn-admin">Delete</button>
         </form>
       </main>
-
+      <hr>
       <br>
       <a class="return" href="/">Return to Homepage</a>
+
+      <%- include('partials/footer') %>
   </body>
 </html>
